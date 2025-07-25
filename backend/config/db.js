@@ -10,3 +10,5 @@ export const connectDB = async () => {
     }
 
 }
+
+// Testing
