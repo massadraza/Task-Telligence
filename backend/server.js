@@ -14,9 +14,9 @@ app.get("/", (req, res) => {
 });
 
 */ 
-app.use(express.json())
+app.use(express.json());
 
-app.use("/api/task/;id", taskRoutes)
+app.use("/api/task/;id", taskRoutes);
 
 app.listen(4000, () => {
     connectDB();
