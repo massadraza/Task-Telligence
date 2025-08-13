@@ -17,7 +17,8 @@ router.get('/', async (req, res) => {
 // Post a new task
 router.post("/", async (req, res) =>  {
     const taskVar = new Task({
-        text: req.body.text
+        text: req.body.text,
+        dueDate: req.body.dueDate,
     });
     try{
         const newTask = await taskVar.save()
@@ -25,6 +26,7 @@ router.post("/", async (req, res) =>  {
     } catch(error){
         res.status(400).json({message: error.message});
     }
+    
 });
 
 // Edit a task
@@ -52,7 +54,7 @@ router.patch("/:id", async (req, res) => {
 // Delete a task
 router.delete("/:id", async (req, res) => {
     try{
-        await Task.findByIdAndUpdate(req.params.id)
+        await Task.findByIdAndDelete(req.params.id)
         res.json({message: "Task deleted"})
     }catch(error){
         res.status(500).json({message: error.message})

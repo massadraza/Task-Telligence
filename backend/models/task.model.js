@@ -10,6 +10,9 @@ const taskSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        dueDate: {
+            type: Date,
+        },
     },
     {timestamps: true}
 );
