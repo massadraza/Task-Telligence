@@ -4,16 +4,19 @@ import { MdOutlineDone } from "react-icons/md";
 import { IoClose } from "react-icons/io5"
 import { MdModeEditOutline } from "react-icons/md";
 import { FaTrash } from "react-icons/fa6"
-import { IoClipboardOutline } from "react-icons/io5"
 
 function App() {
-  
-  const [newTask, setNewTask] = useState("");
+
+
+  /* State Variables for Task Application */
+  const [newTask, setNewTask] = useState(""); 
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
   const [editedText, setEditedText] = useState(""); 
   const [dueDate, setDueDate] = useState("");
 
+
+  /* Adds a task */
   const addTask = async (e) => {
     e.preventDefault();
     if(!newTask.trim()) return;
@@ -27,7 +30,7 @@ function App() {
   };
 
 
-
+  /* Retrives all tasks */
   const getAllTasks = async () => {
 
     try{
@@ -40,18 +43,18 @@ function App() {
     
   }
 
+  /* Displays all tasks to the user */
+  useEffect(() => {getAllTasks();}, [])
 
-  useEffect(() => {
-    getAllTasks();
-  }, [])
-
+  /* Allows the user to start editing a task */
   const startEditingTask = (task) => {
     setEditingTask(task._id)
     setEditedText(task.text)
   }
 
-  const saveEdit = async (id) => {
 
+  /* Allows the user to save an edit to a task */
+  const saveEdit = async (id) => {
     try{
       const response = await axios.patch(`/api/tasks/${id}`, {text: editedText })
       setTasks(tasks.map((task) => (task._id === id ? response.data : task)))
@@ -59,10 +62,9 @@ function App() {
     } catch(error) {
         console.log("Error processing edit. Please try again!", error)
     }
-
-
   }
 
+  /* Allows the user to delete a task */
   const deleteTask = async (id) => {
     try{
       await axios.delete(`/api/tasks/${id}`);
@@ -72,6 +74,7 @@ function App() {
     } 
   }
 
+  /* Allows the user to toggle between completed or not completed */
   const toggleTasks = async (id) => {
 
     try {
@@ -89,38 +92,57 @@ function App() {
 
   return(
 
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100
-    flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-900 flex items-center justify-center p-4">
       
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-            Available Tasks
+      <div className="bg-white rounded-2xl drop-shadow-2xl w-full max-w-lg p-8">
+
+          <h1 className="bg-white rounded-2x1 font-bold text-gray-800 mb-8 text-center text-3xl">
+            Task Telligence
           </h1>
+
 
         <form 
           onSubmit={addTask} 
-          className="flex items-center gap-2 shadow-sm border 
-          border-gray-200 p-2 rounded-lg"
+          className="flex flex-wrap gap-2 shadow-sm border border-gray-200 p-2 rounded-lg"
         >
+          
+        <div className="flex gap-2 w-full flex-wrap">
 
           <input 
-            className="flex-1 outline-none px-3 py-2 text-gray-700 placeholder-gray-400"
+            className="flex-1 min-w-[150px] px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
             type="text" 
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
-              placeholder="Need to do something? Add it here!"
-              required
+            placeholder="Add Task Here!"
+            required
           />
 
+     
+          <input
+            className="flex-none min-w-[140px] px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            type="text"
+            placeholder="Due Date"
+            onFocus={(e) => e.target.type = "date"}
+            required
+          />
+      
+        </div>
+
+        <div className="flex gap-4 justify-center flex-wra w-full">
           <button 
             type="submit" 
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 
-            rounded-md font-medium cursor-pointer"
-            > 
+            className="flex-none bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium cursor-pointer"
+          > 
             Add Task 
           </button>
 
-
+          <button
+            type="priority"
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 font-medium cursor-pointer rounded-md"
+          >
+            Prioritize
+          </button>
+        </div>
 
         </form>
 
@@ -131,7 +153,7 @@ function App() {
               {/* Show nothing if task list is empty */}
             </div>
           ) : (
-            <div flex gap-4>
+            <div className="flex gap-4">
               {tasks.map((task) => (
                 <div key={task._id}>
                   
@@ -162,9 +184,9 @@ function App() {
                         <IoClose/>
                       </button>
 
-                    </div>
+                  </div>
 
-                    </div>
+            </div>
                   ): (
                     <div className="flex items-center justify-between">
 
