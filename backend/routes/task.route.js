@@ -61,4 +61,18 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+// Connecting Llama LLM to Backend
+router.post("/predict-priority", async (req, res) => {
+    const text = req.body;
+    const dueDate = req.body;
+    const completed = req.body;
+
+    try{
+        const response = await axios.post("http://localhost:4000/predict", {text, due_date: dueDate, completed});
+        res.json({priority: response.data.priority})
+    }catch(error){
+        res.status(500).json({error: "Prediction failed"})
+    }
+})
+
 export default router;
