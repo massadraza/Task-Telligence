@@ -1,11 +1,11 @@
 # Task-Telligence
 The objective of this application is to help people who struggle with task management and those who decide to put off tasks/assignments till the very last minute (in other words, procrastination).
-My attempt to solve this problem is designing a full stack web application that lets users input tasks, due dates, and uses a RandomForestClassifier Model to predict the priority of the task.
+My attempt to solve this problem is designing a full-stack web application that lets users input tasks, due dates, and uses a RandomForestClassifier Model based on historical data of the length of the task, how many days it is due, and whether it was completed or not. This model would then be used to predict the priority of the task and display it to the user at the frontend.
 This helps students, whether in high school or college, determine which tasks they should complete first and which tasks can be put off for later.
 
 # Tech Stack
 
-Frontend: Javascript, React, TailwindCSS <br>
+Frontend: JavaScript, React, TailwindCSS <br>
 Backend: NodeJS, ExpressJS, MongoDB, FastAPI <br>
 AI: Sklearn, Pandas, Joblib <br>
 
