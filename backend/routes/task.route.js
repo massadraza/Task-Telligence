@@ -1,5 +1,6 @@
 import express from "express";
 import Task from '../models/task.model.js';
+import axios from "axios";
 
 const router = express.Router();
 
@@ -16,17 +17,27 @@ router.get('/', async (req, res) => {
 
 // Post a new task
 router.post("/", async (req, res) =>  {
-    const taskVar = new Task({
-        text: req.body.text,
-        dueDate: req.body.dueDate,
-    });
+
+    const {text, dueDate} = req.body;
+
     try{
-        const newTask = await taskVar.save()
-        res.status(201).json(newTask)
-    } catch(error){
-        res.status(400).json({message: error.message});
+        const response = await axios.post("http://localhost:8000/predict", {
+            text,
+            dueDate: dueDate,
+            completed: false
+        })
+        
+        const priority = response.data.priority
+
+        const task = new Task({text, dueDate, completed: false, priority})
+        const savedTask = await task.save();
+        res.status(201).json(savedTask)
+
+    } catch (error){
+        console.error(error)
+        res.status(500).json({ message: "Error adding task" });
+
     }
-    
 });
 
 // Edit a task
@@ -60,19 +71,5 @@ router.delete("/:id", async (req, res) => {
         res.status(500).json({message: error.message})
     }
 });
-
-// Connecting Llama LLM to Backend
-router.post("/predict-priority", async (req, res) => {
-    const text = req.body;
-    const dueDate = req.body;
-    const completed = req.body;
-
-    try{
-        const response = await axios.post("http://localhost:4000/predict", {text, due_date: dueDate, completed});
-        res.json({priority: response.data.priority})
-    }catch(error){
-        res.status(500).json({error: "Prediction failed"})
-    }
-})
 
 export default router;

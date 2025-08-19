@@ -12,13 +12,12 @@ const taskSchema = new mongoose.Schema(
             default: false,
         },
         dueDate: {
-            type: Date,
+            type: String,
         },
         priority: {
             type: String,
-            enum: ["High", "Medium", "Low"],
-            default: "Low"
-        }
+            default: "None",
+        },
     },
     {timestamps: true}
 );

@@ -90,40 +90,13 @@ function App() {
   }
 
 
-  /* Gets the priority for a specific task */
-  const getPriority = async (task) => {
-    const res = await fetch("api/tasks/predict-priority", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(task)
-    });
-    const data = await res.json();
-    return data.priority
-  }  
-
-  /* Loop through all tasks and generate a priority associated for each task */
-  const prioritizeTasks = async () => {
-    try{
-      const updatedTasks = await Promise.all(
-        tasks.map(async (task) => {
-          const priority = await getPriority(task);
-          const response = await axios.patch(`/api/tasks/${task._id}`, {priority})
-          return response.data
-        })
-      ) 
-      setTasks(updatedTasks)
-    } catch(error){
-      console.log("Error prioritizing tasks", error)
-    }
-
-  }
 
 
   return(
 
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-900 flex items-center justify-center p-4">
       
-      <div className="bg-white rounded-2xl drop-shadow-2xl w-full max-w-lg p-8">
+      <div className="bg-white rounded-2xl drop-shadow-2xl w-full max-w-4xl p-8">
           
           {/* Header */}
           <h1 className="bg-white rounded-2x1 font-bold text-gray-800 mb-8 text-center text-3xl">
@@ -176,21 +149,6 @@ function App() {
 
         </form>
 
-
-      <div className="flex min-w-[150px] px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 justify-center">
-        
-        {/* Prioritize Task Button */}
-        <form onSubmit={prioritizeTasks}>
-            <button
-            type="submit"
-            className="bg-gradient-to-br from-yellow-400 to-yellow-700 hover:bg-green-600 text-white px-4 py-2 font-medium cursor-pointer rounded-md"
-            >
-            Prioritize
-            </button>
-        </form>
-
-      </div>
-
       <div className="mt-8">
 
         {tasks.length === 0 ? (
@@ -199,7 +157,24 @@ function App() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              {tasks.map((task) => (
+              {tasks.map((task) => {
+                let priorityColor;
+                switch (task.priority) {
+                  case "high":
+                    priorityColor = "ml-3 px-2 py-1 text-xs rounded-lg font-semibold bg-red-100 text-red-600";
+                    break;
+                  case "medium":
+                    priorityColor = "ml-3 px-2 py-1 text-xs rounded-lg font-semibold bg-yellow-100 text-yellow-600";
+                    break;
+                  case "low":
+                    priorityColor = "ml-3 px-2 py-1 text-xs rounded-lg font-semibold bg-green-100 text-green-600";
+                    break;
+                  default:
+                    priorityColor = "text-gray-500";
+              }
+              
+              return (
+
                 <div key={task._id}>
                   
                   {editingTask === task._id ? (
@@ -258,14 +233,11 @@ function App() {
                           </span>
                         )}
 
-                      {/* Display the priority of the task */}
-                        {task.priority && (
-                          <span className={`ml-3 px-2 py-1 text-xs rounded-lg font-semibold ${task.priority === "High" ? "bg-red-100 text-red-600":
-                            task.priority === "Medium" ? "bg-yellow-100 text-yellow-600" : "bg-green-100 text-green-600"
-                          }`}>
-                            {task.priority} Priority
-                          </span>
-                        )}
+                        {/* Display the task priority */}
+                         {task.priority && (
+                            <span className={`text-sm ml-2 ${priorityColor}`}>
+                              Priority: {task.priority.toUpperCase()}
+                            </span> )}
 
                       </div>
 
@@ -293,11 +265,10 @@ function App() {
                   )}
                     
                 </div>
-              
-              ))}
+              );
+              })}  
             </div>
-          )
-          }
+          )}
         </div>
 
       </div> 
