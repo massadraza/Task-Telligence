@@ -17,3 +17,5 @@ def predict_priority(task: Task):
     features = [[len(task.text), days_left, int(task.completed)]]
     priority = model.predict(features)[0]
     return {"priority": priority}
+
+
